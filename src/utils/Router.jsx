@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import Authentication from "../pages/Authentication/Authentication";
 import { auth } from "./firebase";
-import { userSignOut } from "./authentication";
+import DesktopLayout from "../layouts/DesktopLayout";
 
 export default function Router() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
@@ -22,7 +22,11 @@ export default function Router() {
   }, []);
 
   const ProtectedRoute = ({ children }) => {
-    return isAuthenticated ? {...children} : <Authentication setIsAuthenticated={setIsAuthenticated} />;
+    return isAuthenticated ? (
+      { ...children }
+    ) : (
+      <Authentication setIsAuthenticated={setIsAuthenticated} />
+    );
   };
 
   const user = auth.currentUser;
@@ -32,7 +36,7 @@ export default function Router() {
       path: "/",
       element: (
         <ProtectedRoute>
-          <><button onClick={() => userSignOut()}>sign out</button></>
+            <DesktopLayout />
         </ProtectedRoute>
       ),
       // children: [
@@ -45,7 +49,11 @@ export default function Router() {
     },
     {
       path: "/login",
-      element: !isAuthenticated ? <Authentication setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" replace />,
+      element: !isAuthenticated ? (
+        <Authentication setIsAuthenticated={setIsAuthenticated} />
+      ) : (
+        <Navigate to="/" replace />
+      ),
     },
   ]);
 
